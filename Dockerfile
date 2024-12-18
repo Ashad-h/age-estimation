@@ -1,5 +1,5 @@
 # Base image with Python and GPU support
-FROM python:3.8-slim as base
+FROM python:3.9-slim as base
 
 # Switch to non-root user
 RUN apt-get update && apt-get install -y \
