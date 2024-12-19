@@ -5,6 +5,7 @@ import numpy as np
 import dlib
 import torch.nn.functional as F
 from fastapi.responses import JSONResponse
+import ssl
 
 # Load model and detector
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -13,7 +14,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def get_model(model_name="se_resnext50_32x4d", num_classes=101):
     import pretrainedmodels
     import torch.nn as nn
-
+    
+    # Disable SSL verification
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
     model = pretrainedmodels.__dict__[model_name](pretrained="imagenet")
     dim_feats = model.last_linear.in_features
     model.last_linear = nn.Linear(dim_feats, num_classes)
