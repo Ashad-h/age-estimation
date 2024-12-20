@@ -14,10 +14,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def get_model(model_name="se_resnext50_32x4d", num_classes=101):
     import pretrainedmodels
     import torch.nn as nn
-    
+
     # Disable SSL verification
     ssl._create_default_https_context = ssl._create_unverified_context
-    
+
     model = pretrainedmodels.__dict__[model_name](pretrained="imagenet")
     dim_feats = model.last_linear.in_features
     model.last_linear = nn.Linear(dim_feats, num_classes)
@@ -73,3 +73,6 @@ async def predict(file: UploadFile = File(...)):
         return {"age": age}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
+app.run(host="0.0.0.0", port=8000)
