@@ -57,7 +57,7 @@ def process_image(image_bytes):
     inputs = torch.from_numpy(
         np.transpose(np.array(faces).astype(np.float32), (0, 3, 1, 2))
     ).to(device)
-    outputs = F.softmax(model(inputs), dim=-1).cpu().numpy()
+    outputs = F.softmax(model(inputs), dim=-1).detach().cpu().numpy()
     ages = np.arange(0, 101)
     predicted_ages = (outputs * ages).sum(axis=-1)
     return int(predicted_ages[0])
@@ -73,6 +73,3 @@ async def predict(file: UploadFile = File(...)):
         return {"age": age}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
-
-
-app.run(host="0.0.0.0", port=8000)

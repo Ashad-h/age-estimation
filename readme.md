@@ -75,8 +75,7 @@ This project provides an API for age estimation from images using a pre-trained 
 #### Example cURL Command
 
 ```bash
-curl -X POST http://localhost:8000/predict/ \
-  -F "file=@path_to_image.jpg"
+curl -X POST http://localhost:8000/predict/ -F "file=@path_to_image.jpg"
 ```
 
 #### Response
