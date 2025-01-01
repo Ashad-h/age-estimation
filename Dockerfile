@@ -18,6 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY . /app
 
+# Make the download script executable and run it
+RUN chmod +x download_weights.sh && \
+    mkdir -p /root/.cache/torch/hub/checkpoints/ && \
+    ./download_weights.sh
+
 # Expose FastAPI port
 EXPOSE 8000
 

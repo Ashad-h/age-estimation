@@ -1,27 +1,38 @@
 #!/bin/bash
 
-# URL to the pretrained weights
-WEIGHTS_URL="https://huggingface.co/public-data/yu4u-age-estimation-pytorch/resolve/main/pretrained.pth"
+# URLs to the pretrained weights
+WEIGHTS_URL1="https://huggingface.co/public-data/yu4u-age-estimation-pytorch/resolve/main/pretrained.pth"
+WEIGHTS_URL2="https://huggingface.co/imageomics/BGNN-trait-segmentation/resolve/main/se_resnext50_32x4d-a260b3a4.pth"
 
-# Local path to save the weights
-WEIGHTS_PATH="pretrained.pth"
+# Local paths to save the weights
+WEIGHTS_PATH1="pretrained.pth"
+WEIGHTS_PATH2="se_resnext50_32x4d-a260b3a4.pth"
 
-# Function to download the weights
+# Function to download weights
 download_weights() {
-    echo "Downloading weights from $WEIGHTS_URL..."
+    local url=$1
+    local path=$2
+    echo "Downloading weights from $url..."
     
     # Use curl or wget to download the file
     if command -v curl &> /dev/null; then
-        curl -L -o "$WEIGHTS_PATH" "$WEIGHTS_URL"
+        curl -L -o "$path" "$url"
     elif command -v wget &> /dev/null; then
-        wget -O "$WEIGHTS_PATH" "$WEIGHTS_URL"
+        wget -O "$path" "$url"
     else
         echo "Error: Neither curl nor wget is installed."
         exit 1
     fi
     
-    echo "Weights saved to $WEIGHTS_PATH"
+    echo "Weights saved to $path"
 }
 
-# Execute the download function
-download_weights
+# Create cache directory structure
+mkdir -p /root/.cache/torch/hub/checkpoints/
+
+# Execute the download functions
+download_weights "$WEIGHTS_URL1" "$WEIGHTS_PATH1"
+download_weights "$WEIGHTS_URL2" "$WEIGHTS_PATH2"
+
+# Move the second weights file to the torch hub directory
+mv "$WEIGHTS_PATH2" "/root/.cache/torch/hub/checkpoints/"
