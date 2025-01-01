@@ -29,7 +29,7 @@ def load_model():
     model = get_model()
     path = "./pretrained.pth"  # Ensure this file is in the container
     checkpoint = torch.load(path, map_location=device, weights_only=True)
-    model.load_state_dict(checkpoint["state_dict"])
+    model.load_state_dict(checkpoint)
     model = model.to(device)
     model.eval()
     return model
@@ -42,15 +42,30 @@ app = FastAPI()
 
 
 def process_image(image_bytes):
+    input_size = 224
+    margin = 0.4
     nparr = np.frombuffer(image_bytes, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)[:, :, ::-1].copy()
+    image_h, image_w = image.shape[:2]
     detected = face_detector(image, 1)
-    faces = []
+    faces = np.empty((len(detected), input_size, input_size, 3))
 
     for d in detected:
-        x1, y1, x2, y2 = d.left(), d.top(), d.right(), d.bottom()
-        face = cv2.resize(image[y1:y2, x1:x2], (224, 224))
-        faces.append(face)
+        x1, y1, x2, y2, w, h = (
+            d.left(),
+            d.top(),
+            d.right() + 1,
+            d.bottom() + 1,
+            d.width(),
+            d.height(),
+        )
+        xw1 = max(int(x1 - margin * w), 0)
+        yw1 = max(int(y1 - margin * h), 0)
+        xw2 = min(int(x2 + margin * w), image_w - 1)
+        yw2 = min(int(y2 + margin * h), image_h - 1)
+        faces[i] = cv2.resize(
+            image[yw1 : yw2 + 1, xw1 : xw2 + 1], (input_size, input_size)
+        )
 
     if not faces:
         return None

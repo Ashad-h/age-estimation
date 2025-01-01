@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # URLs to the pretrained weights
-WEIGHTS_URL1="https://github.com/yu4u/age-estimation-pytorch/releases/download/v1.0/epoch044_0.02343_3.9984.pth"
+WEIGHTS_URL1="https://huggingface.co/public-data/yu4u-age-estimation-pytorch/resolve/main/pretrained.pth"
 WEIGHTS_URL2="https://huggingface.co/imageomics/BGNN-trait-segmentation/resolve/main/se_resnext50_32x4d-a260b3a4.pth"
 
 # Local paths to save the weights
