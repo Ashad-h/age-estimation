@@ -28,7 +28,7 @@ def get_model(model_name="se_resnext50_32x4d", num_classes=101):
 def load_model():
     model = get_model()
     path = "./pretrained.pth"  # Ensure this file is in the container
-    checkpoint = torch.load(path, map_location=device)
+    checkpoint = torch.load(path, map_location=device, weights_only=True)
     model.load_state_dict(checkpoint["state_dict"])
     model = model.to(device)
     model.eval()
