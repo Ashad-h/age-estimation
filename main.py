@@ -50,7 +50,10 @@ def process_image(image_bytes):
     detected = face_detector(image, 1)
     faces = np.empty((len(detected), input_size, input_size, 3))
 
-    for d in detected:
+    if len(detected) == 0:
+        return None
+
+    for i, d in enumerate(detected):
         x1, y1, x2, y2, w, h = (
             d.left(),
             d.top(),
@@ -66,9 +69,6 @@ def process_image(image_bytes):
         faces[i] = cv2.resize(
             image[yw1 : yw2 + 1, xw1 : xw2 + 1], (input_size, input_size)
         )
-
-    if not faces:
-        return None
 
     inputs = torch.from_numpy(
         np.transpose(np.array(faces).astype(np.float32), (0, 3, 1, 2))
